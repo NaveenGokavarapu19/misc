@@ -1,0 +1,45 @@
+#! /usr/bin/env python3
+
+from subprocess import run
+from argparse import ArgumentParser
+import logging
+import sys
+
+parser = ArgumentParser(description="Startup script for launching prometheus ")
+
+parser.add_argument("-s","--sleep",help="Launch instance with sleep as main process",action="store_true")
+parser.add_argument("-c","--counter",help= "Launch exporter with counter metric",action="store_true")
+parser.add_argument("-g","--gauge",help= "Launch exporter with gauge metric",action="store_true")
+parser.add_argument("-hs","--histogram",help= "Launch exporter with histogram  metric",action="store_true")
+parser.add_argument("-su","--summary",help= "Launch exporter with summary metric",action="store_true")
+
+args = parser.parse_args()
+
+if args.sleep:
+    to_run_command_list = ["sleep", "infinity"]
+    file_handler = logging.FileHandler(filename='tmp.log')
+    stdout_handler = logging.StreamHandler(sys.stdout)
+    handlers = [file_handler, stdout_handler]
+    logging.basicConfig(
+    level=logging.INFO, 
+    format='[%(asctime)s] {%(filename)s:%(lineno)d} %(levelname)s - %(message)s',
+    handlers=handlers
+)
+
+logger = logging.getLogger('LOGGER_NAME')
+
+
+if args.counter:
+    to_run_command_list = ["python3","counter.py"]
+
+
+if args.gauge:
+    to_run_command_list = ["python3","gauge.py"]
+
+if args.histogram:
+    to_run_command_list = ["python3","histogram.py"]
+
+if args.summary:
+    to_run_command_list = ["python3","summary.py"]
+
+run(to_run_command_list)

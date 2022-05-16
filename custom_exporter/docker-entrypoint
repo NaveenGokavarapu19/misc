@@ -1,0 +1,35 @@
+from subprocess import run
+from argparse import ArgumentParser
+import logging
+import sys
+
+parser = ArgumentParser(description="Startup script for launching prometheus ")
+
+parser.add_argument("-s","--sleep",help="Launch instance with sleep as main process",action="store_true")
+parser.add_argument("-a","--app",help= "run the exporter",action="store_true")
+
+
+args = parser.parse_args()
+
+if args.sleep:
+    to_run_command_list = ["sleep", "infinity"]
+    file_handler = logging.FileHandler(filename='tmp.log')
+    stdout_handler = logging.StreamHandler(sys.stdout)
+    handlers = [file_handler, stdout_handler]
+    logging.basicConfig(
+    level=logging.INFO, 
+    format='[%(asctime)s] {%(filename)s:%(lineno)d} %(levelname)s - %(message)s',
+    handlers=handlers
+)
+
+logger = logging.getLogger('LOGGER_NAME')
+
+
+if args.counter:
+    to_run_command_list = ["python3","app.py"]
+
+
+if args.sleep:
+    to_run_command_list = ["sleep","infinity"]
+
+run(to_run_command_list)

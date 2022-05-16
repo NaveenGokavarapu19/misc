@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: python-exporter
+  name: python-exporter
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: python-exporter
+  template:
+    metadata:
+      labels:
+        app: python-exporter
+    spec:
+      containers:
+      - image: naveen1235/python-exporter-demo:v4
+        name: python-exporter-demo
+        command: ["docker-entrypoint"]
+        args: ["-c"]
+        resources:
+          requests:
+            cpu: 250m
+            memory: 250M
+          limits:
+            cpu: 500m
+            memory: 500M
+        ports:
+        - name: server-port
+          containerPort: 8000
+        - name: exporter-port
+          containerPort: 8001
+
+

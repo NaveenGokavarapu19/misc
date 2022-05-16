@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: python-exporter
+  annotations:
+    prometheus.io/scrape: 'true'
+    prometheus.io/port: "5001"
+  name: python-exporter
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: python-exporter
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: python-exporter
+      annotations:
+        prometheus.io/scrape: 'true'
+        prometheus.io/port: "5001"
+    spec:
+      containers:
+      - image: naveen1235/python-exporter:v3
+        name: python-exporter
+        ports:
+        - containerPort: 5000
+          name: app-port
+        - containerPort: 5001
+          name: exp-port 

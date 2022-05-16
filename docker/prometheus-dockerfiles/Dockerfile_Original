@@ -1,0 +1,32 @@
+FROM centos:centos7
+
+RUN yum -y update && yum clean all
+
+RUN yum -y install wget python3 python3-pip
+
+WORKDIR /home/prometheus
+
+ADD  https://github.com/prometheus/prometheus/releases/download/v2.33.5/prometheus-2.33.5.linux-amd64.tar.gz /home/prometheus
+
+RUN set -eux; \
+  tar -xvf *.tar.gz && rm *.tar.gz
+ 
+RUN mv prom* prometheus-extracted
+
+RUN cp  /home/prometheus/prometheus-extracted/prometheus /usr/local/bin
+
+RUN cp  /home/prometheus/prometheus-extracted/promtool /usr/local/bin
+
+COPY docker-entrypoint /usr/local/bin/
+
+RUN chmod 777 /usr/local/bin/docker-entrypoint
+
+RUN mkdir /home/prometheus/persistent
+
+EXPOSE 9090
+
+ENTRYPOINT ["docker-entrypoint"]
+
+CMD ["-t"]
+
+
