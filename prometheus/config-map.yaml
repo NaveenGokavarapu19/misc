@@ -6,7 +6,7 @@ metadata:
     name: prometheus-server-conf
   namespace: monitoring
 data:
-  prometheus.yml: |-
+  prometheus1.yml: |-
     global:
       scrape_interval: 5s
       evaluation_interval: 5s
