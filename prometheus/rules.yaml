@@ -1,0 +1,25 @@
+apiVersion: v1
+data:
+  prometheus.rules: "groups:\n- name: Prometheus-components\n  rules:\n  - alert:
+    KubeStateMetrics \n    expr: up{job=\"kube-state-metrics\"} == 0\n    for: 1m\n
+    \   labels:\n      severity: critical\n      component: infra\n    annotations:\n
+    \     summary: KubeStateMetrics down\n      description: \"{{$labels.instance
+    }} {{$labels.job}} {{$labels.component}} is down\"\n\n\n- name: Development-components\n
+    \ rules:\n  - alert: CpuUsageHighPythonServer\n    expr: (sum(rate(container_cpu_usage_seconds_total{namespace=\"default\",
+    container=~\"python-exporter\", image!=\"\"}[1m])) / sum(kube_pod_container_resource_limits{namespace=\"default\",container=~\"python-exporter\",
+    unit=\"core\"})) * 100 > 50\n    for: 1m\n    labels:\n      severity: warning\n
+    \     component: development\n      app: server\n      lang: python   \n    annotations:\n
+    \     summary: The cpu usage of the container is 50 percent allocated resources.
+    \n      description: \"{{$labels.instance }} {{$labels.job}} {{$labels.component}}
+    is having 50 % cpu usage\"\n\n\n- name: Database-components\n  rules:\n  - alert:
+    MemoryUsageHighMongodb\n    expr: (sum(container_memory_working_set_bytes{namespace=\"mongodb\",
+    image!=\"\",container=~\"mongodb\"}) / sum(kube_pod_container_resource_limits{namespace=\"mongodb\",container=\"mongodb\",unit=\"byte\"}))
+    * 100 > 50\n    for: 1m\n    labels:\n      severity: warning\n      component:
+    database\n      app: db\n      dbname: mongodb\n    annotations:\n      summary:
+    The memory usage of the container is 50 percent allocated resources. \n      description:
+    \"{{$labels.instance }} {{$labels.job}} {{$labels.component}} is having 50 % memory
+    usage\"\n\n\n\n"
+kind: ConfigMap
+metadata:
+  name: prometheus-alert-conf
+  namespace: monitoring
