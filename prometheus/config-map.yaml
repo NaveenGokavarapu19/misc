@@ -6,31 +6,18 @@ metadata:
     name: prometheus-server-conf
   namespace: monitoring
 data:
-  prometheus.rules: |-
-    groups:
-    - name: devopscube demo alert
-      rules:
-      - alert: KubeStateMetrics
-        expr: up{job="kube-state-metrics"} == 0
-        for: 1m
-        labels:
-          severity: critical
-        annotations:
-          summary: KubeStateMetrics down
-          description: "{{labels.instance }} {{labels.job}} is down"
-
   prometheus.yml: |-
     global:
       scrape_interval: 5s
       evaluation_interval: 5s
     rule_files:
-      - /home/prometheus/prometheus-extracted/alerts/prometheus.rules
+      - /home/prometheus/prometheus-extracted/alerts/*.rules
     alerting:
       alertmanagers:
       - scheme: http
         static_configs:
         - targets:
-          - "alertmanager.monitoring.svc:9093"
+          - "alertmanager.monitoring.svc.cluster.local:9093"
 
     scrape_configs:
       - job_name: "prometheus"
